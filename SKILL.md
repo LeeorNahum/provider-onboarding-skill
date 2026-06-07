@@ -4,7 +4,7 @@ description: Run an interactive external-provider setup loop for a web product, 
 disable-model-invocation: true
 metadata:
   author: Leeor Nahum
-  version: "2.1.0"
+  version: "2.2.0"
 ---
 
 # Provider Onboarding
@@ -47,6 +47,18 @@ in the chosen folder outside any repo:
 
 This split is the default unless the user says otherwise.
 
+## Order Of Operations
+
+Stand each stage up in dependency order so a value gets filled once it is known.
+
+- Make the product work locally first: fill local env, push the backend dev deployment, and confirm the critical paths before standing up any hosted stage.
+- Push the repo to its remote before wiring a host that deploys from that remote, since git-connected branch deploys need the remote to exist.
+- For each hosted stage, provision its credentials, fill its env, then add its domain and DNS records as soon as that stage has an origin to point at.
+- Treat a stage as done only when its dashboard state is set too, such as allowed origins, callbacks, webhooks, and branch deploys, alongside its keys.
+- When a later step changes an earlier value, update every store that holds it in the same pass.
+
+Start from this order, and adapt it when a provider forces a different sequence.
+
 ## The Loop
 
 Work one provider or one small sub-step at a time. Never dump the whole checklist.
@@ -70,11 +82,15 @@ Do as much as the provider CLI allows, and hand the rest to the user as dashboar
 - Agent terminal: reactive backend session, env set, codegen, and deploy checks; host link and env push when the project is linked; repository and CI value setup where a CLI exists.
 - User dashboard: auth, OAuth, allowed origins, object storage buckets and tokens, billing products and webhooks, API keys, domains, and branch deploys.
 
+Before you run a command or fill a value, know where it lands, how it takes effect, and why, so you target the right store and stage in one pass. Pass explicit scope flags such as stage, branch, environment, team, or project so a command acts on the intended target without prompting.
+
 If a CLI step needs interactive input, either ask the user for the one missing value and then run the non-interactive form, or hand them the exact command for their own terminal.
 
 ## Deferrals
 
 Some values need a public origin that does not exist until the first staging deploy, such as a webhook target or allowed origins. Defer those explicitly, note which later step unblocks each, and keep a running list. Do not invent a placeholder to skip the wait.
+
+A production provider on a custom domain issues records that must resolve before its keys work. Add those records, then defer each dependent step until the provider reports the domain verified.
 
 ## Finish
 
