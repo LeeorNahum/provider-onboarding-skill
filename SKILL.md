@@ -1,9 +1,9 @@
 ---
-name: provider-onboarding
-description: Run an interactive external-provider setup loop for a web product, wiring auth, DNS, hosting, backend, billing, storage, and email across local, staging, and production stages and filling every environment value into its correct store. Use when onboarding providers, filling env files, configuring dashboards, or standing up a new deployment stage.
+name: "provider-onboarding"
+description: "Run an interactive external-provider setup loop for a web product, wiring auth, DNS, hosting, backend, billing, storage, and email across local, staging, and production stages and filling every environment value into its correct store. Use when onboarding providers, filling env files, configuring dashboards, or standing up a new deployment stage."
 disable-model-invocation: true
 metadata:
-  author: Leeor Nahum
+  author: "Leeor Nahum"
   version: "2.2.0"
 ---
 
