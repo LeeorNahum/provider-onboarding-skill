@@ -4,7 +4,7 @@ description: "Run an interactive external-provider setup loop for a web product,
 disable-model-invocation: true
 metadata:
   author: "Leeor Nahum"
-  version: "2.4.0"
+  version: "2.5.0"
 ---
 
 # Provider Onboarding
@@ -57,9 +57,13 @@ This split is the default unless the user says otherwise.
 
 ## Order Of Operations
 
-Stand each stage up in dependency order so a value gets filled once it is known.
+Configure each provider as completely as its known dependencies allow, across dev/test and production, while its dashboard and setup context are already open.
 
-- Make the product work locally first: fill local env, push the backend dev deployment, and confirm the critical paths before standing up any hosted stage.
+- Work one provider or one small sub-step at a time. Within that provider, configure its dev/test tier first, then its production tier, using the provider's native environments, modes, deployments, or credential scopes.
+- Complete production provisioning and configuration when the required values are already known, even if end-to-end production verification will happen later. Keep live activation actions behind their existing approval gates.
+- Order integrations by dependency truth. Establish canonical projects, deployments, domains, and origins before creating credentials, allowlists, callbacks, webhooks, or redirect URIs that refer to them. When an upstream value is not available yet, defer the dependent setting instead of entering a temporary value that will need retroactive repair.
+- Before moving to the next provider, finish every actionable setting across its applicable tiers, including keys, native integrations, OAuth credentials, origins, roles, callbacks, webhooks, and dashboard state. Record each remaining deferral with its blocker and the exact later step that unblocks it.
+- Fill local env and push the backend dev deployment as soon as the dev/test provider values are ready, so local verification can proceed while production configuration is preserved for later verification.
 - Push the repo to its remote before wiring a host that deploys from that remote, since git-connected branch deploys need the remote to exist.
 - For each hosted stage, provision its credentials, fill its env, then add its domain and DNS records as soon as that stage has an origin to point at.
 - Treat a stage as done only when its dashboard state is set too, such as allowed origins, callbacks, webhooks, and branch deploys, alongside its keys.
