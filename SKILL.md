@@ -4,7 +4,7 @@ description: "Run an interactive external-provider setup loop for a web product,
 disable-model-invocation: true
 metadata:
   author: "Leeor Nahum"
-  version: "2.2.0"
+  version: "2.3.0"
 ---
 
 # Provider Onboarding
@@ -19,12 +19,20 @@ The repo as it stands is the spec. Before touching anything, read every committe
 
 Each runtime that reads env owns its own contract: a committed `.env.example` template and a filled `.env.local` beside it in the repo. Use the same key names across stages; only values change by store.
 
+## Provider Shape And Naming
+
+Before provisioning a provider, check its current official documentation and dashboard model for the intended way to isolate development, staging, and production. Prefer the provider's native environments, modes, sandboxes, deployments, or credential scopes when they provide the required isolation inside one canonical project. Create separate projects or accounts only when the provider requires them or when its native model cannot keep stages independently configurable and safe.
+
+Map the product stages onto the provider's actual model instead of assuming that every provider needs one project per stage. Record the mapping before creating or filling resources.
+
+Use the product's canonical name for the provider project, application, workspace, or account when the provider accepts it. Preserve normal capitalization and spaces when supported. Adapt only as required by the provider, progressively applying constraints such as removing spaces, restricting characters, lowercasing, adding a purpose suffix, or creating separate stage-specific names. Check availability before falling back to a less canonical name.
+
 ## Two Stages, Three Branches
 
 - Dev/test credentials are used for both `dev` (local) and the `preview` branch (staging deploy); they usually share the same secret values, but things like origin URLs or certain per-stage endpoints may differ as needed.
 - Production credentials serve `main` only.
 
-Create separate provider credentials per stage when the provider supports it. Never build `LOCAL_*`, `DEV_*`, `PROD_*` key triples.
+Keep dev/test and production resources or credentials isolated through the provider's intended mechanism. Never build `LOCAL_*`, `DEV_*`, `PROD_*` key triples.
 
 ## Where Filled Values Live
 
