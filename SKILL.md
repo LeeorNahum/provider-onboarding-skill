@@ -4,7 +4,7 @@ description: "Run an interactive external-provider setup loop for a web product,
 disable-model-invocation: true
 metadata:
   author: "Leeor Nahum"
-  version: "2.5.0"
+  version: "2.6.0"
 ---
 
 # Provider Onboarding
@@ -26,6 +26,15 @@ Before provisioning a provider, check its current official documentation and das
 Map the product stages onto the provider's actual model instead of assuming that every provider needs one project per stage. Record the mapping before creating or filling resources.
 
 Use the product's canonical name for the provider project, application, workspace, or account when the provider accepts it. Preserve normal capitalization and spaces when supported. Adapt only as required by the provider, progressively applying constraints such as removing spaces, restricting characters, lowercasing, adding a purpose suffix, or creating separate stage-specific names. Check availability before falling back to a less canonical name.
+
+## Provider Resource Metadata
+
+Fill optional human-readable descriptions, labels, and tags whenever a provider resource supports them. State the product, the resource's operational purpose, and its stage or shared scope so a person or agent can identify it without reconstructing setup history.
+
+- Use concise descriptions that explain what the resource enables and which stage it serves.
+- Use provider-native tags or labels for product, environment, purpose, and management source when those fields exist.
+- Keep terminology consistent with the canonical product, surface, runtime, and stage names already used by the repo.
+- Apply the DNS comment format below to DNS records; it is the exact special case for that resource type.
 
 ## Two Stages, Three Branches
 
