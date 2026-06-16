@@ -4,7 +4,7 @@ description: "Run an interactive external-provider setup loop for a web product,
 disable-model-invocation: true
 metadata:
   author: "Leeor Nahum"
-  version: "2.6.0"
+  version: "2.6.1"
 ---
 
 # Provider Onboarding
@@ -76,6 +76,7 @@ Configure each provider as completely as its known dependencies allow, across de
 - Push the repo to its remote before wiring a host that deploys from that remote, since git-connected branch deploys need the remote to exist.
 - For each hosted stage, provision its credentials, fill its env, then add its domain and DNS records as soon as that stage has an origin to point at.
 - Treat a stage as done only when its dashboard state is set too, such as allowed origins, callbacks, webhooks, and branch deploys, alongside its keys.
+- When a host offers human-facing deployment protection or an SSO login wall in front of deployments, disable or bypass it for any surface that machine clients call directly, such as public APIs, MCP servers, and webhook receivers. That wall answers non-browser callers with an HTML login page, which silently breaks their OAuth discovery, dynamic client registration, and requests, and the actual endpoint call hangs until it times out. Surfaces that carry their own token or OAuth auth do not need it; keep the wall only on human-only surfaces, and check this per stage, since preview and production scope it independently.
 - When a later step changes an earlier value, update every store that holds it in the same pass.
 
 Start from this order, and adapt it when a provider forces a different sequence.
