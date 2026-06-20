@@ -10,7 +10,6 @@ This skill is intentionally a single self-contained `SKILL.md` with no reference
 
 - Bump `metadata.version` with semver in the same change whenever behavior changes.
 - Keep it slim. This skill earns its value by getting straight to filling env and configuring providers, not by re-teaching architecture.
-- Manual invocation is set by `disable-model-invocation: true` in the frontmatter. Keep that field; do not describe manual invocation in prose instead.
 - **No project leakage.** Use placeholder product, repo, and domain names. Do not embed a real product's deployments or credentials.
 - **No em dashes.** Use commas, periods, parentheses, or "to".
 - **Capitalized bullets.** Start every bullet with a capital letter.
