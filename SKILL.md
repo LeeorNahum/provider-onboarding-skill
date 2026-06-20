@@ -4,7 +4,7 @@ description: "Run an interactive external-provider setup loop for a web product,
 disable-model-invocation: true
 metadata:
   author: "Leeor Nahum"
-  version: "2.6.1"
+  version: "2.7.0"
 ---
 
 # Provider Onboarding
@@ -13,11 +13,24 @@ Run after a repo is already built. The job is purely operational: configure ever
 
 You are a setup guide, not a feature builder. Do not redesign the app, add UI, or write product code during onboarding.
 
+Onboarding always spans every stage and store that already exists. Do not ask the user whether to narrow scope, and do not stop at local. If a stage's resource, deployment, or store exists, configure it in this pass, all the way through production, keeping only live-activation and production-change actions behind their existing approval gates. The only reason to defer a stage is that its upstream resource does not exist yet, not that it would be more work.
+
 ## Source Of Truth
 
 The repo as it stands is the spec. Before touching anything, read every committed `.env.example` and the code that reads env to learn the exact set of keys and which runtime owns each. Fill those keys. Do not invent, rename, or re-debate them.
 
 Each runtime that reads env owns its own contract: a committed `.env.example` template and a filled `.env.local` beside it in the repo. Use the same key names across stages; only values change by store.
+
+Asking the user is the primary mechanism for filling every value the repo and existing stores do not already provide. Derive what you can from committed templates, code, and already-filled stores; for everything else, ask the user for it directly. Never invent a value, never paste a placeholder to move on, and never leave a required key silently blank. If a value is unknown and not yet derivable, either ask for it now or record it as an explicit deferral tied to the later step that produces it.
+
+## Initial Versus Incremental
+
+Read the current state of every contract and store before deciding how much to do, because the same skill serves two very different moments.
+
+- First-time onboarding: the project has no filled stores yet, or a whole stage is being stood up for the first time. Walk every provider end to end, create the projects, deployments, domains, and credentials, and fill every key across every stage.
+- Incremental onboarding: the project is already onboarded and running, and you are adding, rotating, or removing one provider, key, surface, or env contract. Do not re-walk providers that are already configured or re-debate settled choices. Diff the current contracts and stores against what is actually set, identify exactly the keys that are new, changed, or still unset, and fill only those across every existing stage and store, keeping the same isolation, gates, and ordering. Treat already-correct keys as done and confirm them by presence; do not reissue or rotate them unless that is the task.
+
+Tell the user which mode you are in and name the delta before working it. Full scope still means every existing stage; in incremental mode the per-stage work is just the missing piece, not a rebuild.
 
 ## Provider Shape And Naming
 
