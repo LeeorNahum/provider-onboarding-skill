@@ -3,7 +3,7 @@ name: "provider-onboarding"
 description: "Run an interactive external-provider setup loop for a web product: wire auth, DNS, hosting, backend, billing, storage, and email across local, staging, and production stages, and fill every environment value into its correct store. Use when onboarding providers, filling env files, configuring dashboards, or standing up a new deployment stage."
 metadata:
   author: "Leeor Nahum"
-  version: "2.8.0"
+  version: "2.9.0"
 ---
 
 # Provider Onboarding
@@ -144,6 +144,17 @@ Do as much as the provider CLI allows, and hand the rest to the user as dashboar
 Before you run a command or fill a value, know where it lands, how it takes effect, and why, so you target the right store and stage in one pass. Pass explicit scope flags such as stage, branch, environment, team, or project so a command acts on the intended target without prompting.
 
 If a CLI step needs interactive input, either ask the user for the one missing value and then run the non-interactive form, or hand them the exact command for their own terminal.
+
+## Publishing A Package Or CLI
+
+When the product distributes a package or CLI through a public registry (npm, for example), treat the registry as one more provider to onboard: a distribution step, not a code change.
+
+- Authenticate the registry account or an automation token in the agent terminal. Confirm the scope and the package name are owned or available before the first publish.
+- Publish under the product's scope with public access, shipping only the built output. A CLI declares its command in package metadata so a user can run it through the registry's run-without-install path (`npx <scope>/<name>` for npm) or expose it with a global install.
+- Keep the published version in step with the repo's release process rather than hand-bumping it during onboarding.
+- A self-contained compiled binary, for users without the language runtime, is an optional later step. Record it as a deferral rather than blocking the first publish.
+
+Confirm the version and scope before the first publish, like any outward action.
 
 ## Deferrals
 
