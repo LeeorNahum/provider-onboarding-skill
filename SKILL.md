@@ -3,7 +3,7 @@ name: "provider-onboarding"
 description: "Run an interactive external-provider setup loop for a web product: wire auth, DNS, hosting, backend, billing, storage, and email across local, staging, and production stages, and fill every environment value into its correct store. Use when onboarding providers, filling env files, configuring dashboards, or standing up a new deployment stage."
 metadata:
   author: "Leeor Nahum"
-  version: "2.9.0"
+  version: "2.9.1"
 ---
 
 # Provider Onboarding
@@ -55,6 +55,8 @@ Fill optional human-readable descriptions, labels, and tags whenever a provider 
 
 Keep dev/test and production resources or credentials isolated through the provider's intended mechanism. Never build `LOCAL_*`, `DEV_*`, `PROD_*` key triples.
 
+Preview should prove production-shaped behavior with non-production resources. Configure provider dashboards, host rules, OAuth clients, and runtime env so preview exercises the same product auth path and public protocol posture that production will use after promotion. Stage values may differ. Product posture should not.
+
 ## Where Filled Values Live
 
 The committed `.env.example` is the template. Its filled counterpart is `.env.local`, which lives in the repo right beside it and is gitignored. Fill `.env.local` as a one-to-one copy of the example with real values. This is the default home for local values.
@@ -88,7 +90,7 @@ Configure each provider as completely as its known dependencies allow, across de
 - Push the repo to its remote before wiring a host that deploys from that remote, since git-connected branch deploys need the remote to exist.
 - For each hosted stage, provision its credentials, fill its env, then add its domain and DNS records as soon as that stage has an origin to point at.
 - Treat a stage as done only when its dashboard state is set too, such as allowed origins, callbacks, webhooks, and branch deploys, alongside its keys.
-- When a host offers human-facing deployment protection or an SSO login wall in front of deployments, disable or bypass it for any surface that machine clients call directly, such as public APIs, MCP servers, and webhook receivers. That wall answers non-browser callers with an HTML login page, which silently breaks their OAuth discovery, dynamic client registration, and requests, and the actual endpoint call hangs until it times out. Surfaces that carry their own token or OAuth auth do not need it; keep the wall only on human-only surfaces, and check this per stage, since preview and production scope it independently.
+- When a host offers human-facing deployment protection or an SSO login wall in front of deployments, disable or bypass it for any surface that machine clients call directly, such as public APIs, MCP servers, and webhook receivers. That wall answers non-browser callers with an HTML login page, which silently breaks their OAuth discovery, dynamic client registration, and requests, and the actual endpoint call hangs until it times out. Surfaces that carry their own token or OAuth auth do not need it. Keep the wall only on human-only surfaces, and check this per stage, since preview and production scope it independently. Keep preview and production on the same product auth path against their own stage resources.
 - When a later step changes an earlier value, update every store that holds it in the same pass.
 
 Start from this order, and adapt it when a provider forces a different sequence.
